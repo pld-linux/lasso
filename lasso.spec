@@ -28,6 +28,7 @@ BuildRequires:	gtk-doc
 BuildRequires:	libtool
 BuildRequires:	libxml2-devel
 BuildRequires:	openssl-devel
+BuildRequires:	pkgconfig
 BuildRequires:	rpmbuild(macros) >= 1.315
 BuildRequires:	swig
 BuildRequires:	xmlsec1-devel
@@ -44,10 +45,12 @@ BuildRequires:	perl(Test::More)
 %if %{with java}
 BuildRequires:	jdk
 BuildRequires:	jpackage-utils
+BuildRequires:	rpm-javaprov
 %endif
 %if %{with python}
 BuildRequires:	python-devel
 BuildRequires:	python-lxml
+BuildRequires:	rpm-pythonprov
 %endif
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -189,7 +192,7 @@ rm -rf $RPM_BUILD_ROOT
 %files -n perl-%{name}
 %defattr(644,root,root,755)
 %{perl_vendorarch}/Lasso.pm
-%dir %attr(755,root,root) %{perl_vendorarch}/auto/Lasso
+%dir %{perl_vendorarch}/auto/Lasso
 %attr(755,root,root) %{perl_vendorarch}/auto/Lasso/Lasso.so
 %endif
 
