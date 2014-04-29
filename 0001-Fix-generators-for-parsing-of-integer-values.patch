@@ -1,0 +1,38 @@
+From 0caa4e7b254b26d418048191aa588c6696a55a4d Mon Sep 17 00:00:00 2001
+From: Simo Sorce <simo@redhat.com>
+Date: Thu, 17 Apr 2014 18:10:31 -0400
+Subject: [PATCH 1/2] Fix generators for parsing of integer values
+
+All number types including enums are parse as if they were integers,
+this breaks in many ways, long and int are not the same size in all
+architectures as well as enum may vary in size depening on compiler,
+architecture and optimizations.
+
+Always pass an actual long to PyArg_ParseTuple() and rely on the a
+cast from long to the destination variable type in the following
+assignment.
+
+Signed-off-by: Simo Sorce <simo@redhat.com>
+---
+ bindings/python/lang.py | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/bindings/python/lang.py b/bindings/python/lang.py
+index f5c9d36ec6bd4550a8edd4ba93e5f4862bd40139..c695518e5a553738f11d614c9ce98953338408b7 100644
+--- a/bindings/python/lang.py
++++ b/bindings/python/lang.py
+@@ -770,9 +770,9 @@ register_constants(PyObject *d)
+                 parse_arg = '&value'
+                 print >> fd, '    %s value;' % type
+             elif is_int(m, self.binding_data):
+-                parse_format = 'i'
++                parse_format = 'l'
+                 parse_arg = '&value'
+-                print >> fd, '    %s value;' % type
++                print >> fd, '    long value;'
+             elif is_glist(m) or is_hashtable(m) or is_xml_node(m) or is_boolean(m):
+                 parse_format = 'O'
+                 print >> fd, '    PyObject *cvt_value;'
+-- 
+1.9.0
+

@@ -1,0 +1,26 @@
+From 8e2b247819b343c12aa29ad8d342f839632ace3c Mon Sep 17 00:00:00 2001
+From: Simo Sorce <simo@redhat.com>
+Date: Mon, 14 Apr 2014 14:19:20 -0400
+Subject: [PATCH] Fix java version detection
+
+Signed-off-by: Simo Sorce <simo@redhat.com>
+---
+ configure.ac | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/configure.ac b/configure.ac
+index 0f32ad3164fb20f179ec1cca0af3f6ab485b8ffd..5668e6f325f8ad2caee1e960ed92f13fffca258f 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -220,7 +220,7 @@ if test "x$JAVAC" = "xjavac"; then
+     dnl If we have a java compiler
+     dnl need to change quotes to allow square brackets
+     changequote(<<, >>)dnl
+-    JAVA_VERSION=`$JAVA -version 2>&1 | $SED -ne 's/java version "\([^"]*\)".*/\1/p' 2>/dev/null`
++    JAVA_VERSION=`$JAVA -version 2>&1 | $SED -ne 's/\(openjdk\|java\) \(full\)*version "\([^"]*\)".*/\3/p' 2>/dev/null`
+     changequote([, ])dnl
+     dnl If no java version found, perphas it is a kaffee environment...
+     if test "x$JAVA_VERSION" = x; then
+-- 
+1.8.5.3
+
