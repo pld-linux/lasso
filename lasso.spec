@@ -30,7 +30,6 @@ BuildRequires:	libxml2-devel
 BuildRequires:	openssl-devel
 BuildRequires:	pkgconfig
 BuildRequires:	rpmbuild(macros) >= 1.315
-BuildRequires:	swig
 BuildRequires:	xmlsec1-devel
 BuildRequires:	xmlsec1-openssl-devel
 %if %{with php}
@@ -44,7 +43,6 @@ BuildRequires:	perl(Test::More)
 %endif
 %if %{with java}
 BuildRequires:	jdk
-BuildRequires:	jpackage-utils
 BuildRequires:	rpm-javaprov
 %endif
 %if %{with python}
