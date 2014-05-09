@@ -11,6 +11,7 @@
 %bcond_without	python		# Python 2.x bindings
 
 Summary:	Liberty Alliance Single Sign On
+Summary(pl.UTF-8):	Implementacja Liberty Alliance Single Sign On
 Name:		lasso
 Version:	2.4.0
 Release:	1
@@ -58,27 +59,41 @@ standards, including the SAML and SAML2 specifications. It allows to
 handle the whole life-cycle of SAML based Federations, and provides
 bindings for multiple languages.
 
+%description -l pl.UTF-8
+Lasso to biblioteka implementująca standardy Liberty Alliance Single
+Sign On, w tym specyfikacje SAML i SAML2. Pozwala obsłużyć cały cykl
+życia "Federacji" opartych na SAML, zapewnia wiązania dla wielu
+języków.
+
 %package devel
-Summary:	Lasso development headers and documentation
+Summary:	Lasso development headers
+Summary(pl.UTF-8):	Pliki nagłówkowe Lasso
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 
 %description devel
-This package contains the header files, static libraries and
-development documentation for Lasso.
+This package contains the header files for Lasso.
+
+%description devel -l pl.UTF-8
+Ten pakiet zawiera pliki nagłówkowe Lasso.
 
 %package -n perl-%{name}
 Summary:	Liberty Alliance Single Sign On (lasso) Perl bindings
-Group:		Development/Libraries
+Summary(pl.UTF-8):	Wiązania Perla do Liberty Alliance Single Sign On (lasso)
+Group:		Development/Languages/Perl
 Requires:	%{name} = %{version}-%{release}
 
 %description -n perl-%{name}
 Perl language bindings for the lasso (Liberty Alliance Single Sign On)
 library.
 
+%description -n perl-%{name} -l pl.UTF-8
+Wiązania Perla do biblioteki lasso (Liberty Alliance Single Sign On).
+
 %package -n java-%{name}
 Summary:	Liberty Alliance Single Sign On (lasso) Java bindings
-Group:		Development/Libraries
+Summary(pl.UTF-8):	Wiązania Javy do Liberty Alliance Single Sign On (lasso)
+Group:		Libraries/Java
 Requires:	%{name} = %{version}-%{release}
 Requires:	jpackage-utils
 Requires:	jre
@@ -87,23 +102,35 @@ Requires:	jre
 Java language bindings for the lasso (Liberty Alliance Single Sign On)
 library.
 
+%description -n java-%{name} -l pl.UTF-8
+Wiązania Javy do biblioteki lasso (Liberty Alliance Single Sign On).
+
 %package -n php-%{name}
 Summary:	Liberty Alliance Single Sign On (lasso) PHP bindings
-Group:		Development/Libraries
+Summary(pl.UTF-8):	Wiązania PHP do Liberty Alliance Single Sign On (lasso)
+Group:		Development/Languages/PHP
 Requires:	%{name} = %{version}-%{release}
 
 %description -n php-%{name}
 PHP language bindings for the lasso (Liberty Alliance Single Sign On)
 library.
 
+%description -n php-%{name} -l pl.UTF-8
+Wiązania PHP do biblioteki lasso (Liberty Alliance Single Sign On).
+
 %package -n python-%{name}
 Summary:	Liberty Alliance Single Sign On (lasso) Python bindings
-Group:		Development/Libraries
+Summary(pl.UTF-8):	Wiązania Pythona do Liberty Alliance Single Sign On (lasso)
+Group:		Libraries/Python
 Requires:	%{name} = %{version}-%{release}
 
 %description -n python-%{name}
 Python language bindings for the lasso (Liberty Alliance Single Sign
 On) library.
+
+%description -n python-%{name} -l pl.UTF-8
+Wiązania Pythona do biblioteki lasso (Liberty Alliance Single Sign
+On).
 
 %prep
 %setup -q
@@ -166,7 +193,7 @@ rm $RPM_BUILD_ROOT%{perl_vendorarch}/auto/Lasso/Lasso.bs
 %endif
 
 # Remove bogus doc files
-rm -r $RPM_BUILD_ROOT%{_docdir}/%{name}
+%{__rm} -r $RPM_BUILD_ROOT%{_docdir}/%{name}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -178,11 +205,11 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc AUTHORS COPYING NEWS README
 %attr(755,root,root) %{_libdir}/liblasso.so.*.*.*
-%ghost %{_libdir}/liblasso.so.3
+%attr(755,root,root) %ghost %{_libdir}/liblasso.so.3
 
 %files devel
 %defattr(644,root,root,755)
-%{_libdir}/liblasso.so
+%attr(755,root,root) %{_libdir}/liblasso.so
 %{_pkgconfigdir}/lasso.pc
 %{_includedir}/lasso
 
