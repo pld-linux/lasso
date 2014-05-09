@@ -1,14 +1,15 @@
 #
 # TODO
 # - fix tests (some linkage errors)
-
+#
 # Conditional build:
-%bcond_with	wsd		# wsd
+%bcond_with	wsf		# experimental ID-WSF support
 %bcond_with	tests		# build tests
 %bcond_without	java		# Java bindings
 %bcond_without	php		# PHP bindings
 %bcond_without	perl		# Perl bindings
 %bcond_without	python		# Python 2.x bindings
+%bcond_without	static_libs	# static library
 
 Summary:	Liberty Alliance Single Sign On
 Summary(pl.UTF-8):	Implementacja Liberty Alliance Single Sign On
@@ -23,34 +24,42 @@ Patch1:		0001-Fix-java-version-detection.patch
 Patch2:		0001-Fix-generators-for-parsing-of-integer-values.patch
 Patch3:		0002-xml-xml.c-fix-liberal-use-of-casting-for-the-SNIPPET.patch
 URL:		http://lasso.entrouvert.org/
+BuildRequires:	autoconf >= 2.53
+BuildRequires:	automake >= 1:1.11
+%{?with_tests:BuildRequires:	check-devel}
 %{?with_wsf:BuildRequires: cyrus-sasl-devel}
-BuildRequires:	glib2-devel
-BuildRequires:	gtk-doc
+BuildRequires:	glib2-devel >= 1:2.17.0
+BuildRequires:	gtk-doc >= 1.9
 BuildRequires:	libtool
-BuildRequires:	libxml2-devel
+BuildRequires:	libxml2-devel >= 2.0
+BuildRequires:	libxslt-devel
 BuildRequires:	openssl-devel
 BuildRequires:	pkgconfig
 BuildRequires:	rpmbuild(macros) >= 1.315
-BuildRequires:	xmlsec1-devel
-BuildRequires:	xmlsec1-openssl-devel
+BuildRequires:	xmlsec1-devel >= 1.2.6
+BuildRequires:	xmlsec1-openssl-devel >= 1.2.6
+BuildRequires:	zlib-devel
 %if %{with php}
 BuildRequires:	expat-devel
-BuildRequires:	php-devel
+BuildRequires:	php-devel >= 5
 BuildRequires:	python
 %endif
 %if %{with perl}
-BuildRequires:	perl(ExtUtils::MakeMaker)
-BuildRequires:	perl(Test::More)
+BuildRequires:	perl-ExtUtils-MakeMaker
+BuildRequires:	perl-Test-Simple
 %endif
 %if %{with java}
 BuildRequires:	jdk
 BuildRequires:	rpm-javaprov
 %endif
 %if %{with python}
-BuildRequires:	python-devel
+BuildRequires:	python-devel >= 2
 BuildRequires:	python-lxml
 BuildRequires:	rpm-pythonprov
 %endif
+Requires:	glib2 >= 1:2.17.0
+Requires:	xmlsec1 >= 1.2.6
+Requires:	xmlsec1-openssl >= 1.2.6
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -70,12 +79,28 @@ Summary:	Lasso development headers
 Summary(pl.UTF-8):	Pliki nagłówkowe Lasso
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
+Requires:	glib2-devel >= 1:2.17.0
+Requires:	libxml2-devel >= 2.0
+Requires:	libxslt-devel
+Requires:	xmlsec1-devel >= 1.2.6
 
 %description devel
 This package contains the header files for Lasso.
 
 %description devel -l pl.UTF-8
 Ten pakiet zawiera pliki nagłówkowe Lasso.
+
+%package static
+Summary:	Static lasso library
+Summary(pl.UTF-8):	Statyczna biblioteka lasso
+Group:		Development/Libraries
+Requires:	%{name}-devel = %{version}-%{release}
+
+%description static
+Static lasso library.
+
+%description static -l pl.UTF-8
+Statyczna biblioteka lasso.
 
 %package -n perl-%{name}
 Summary:	Liberty Alliance Single Sign On (lasso) Perl bindings
@@ -149,22 +174,23 @@ On).
 %{__autoconf}
 %{__automake}
 %configure \
-	--disable-static \
-	--disable-silent-rules \
-	%{!?with_tests:--disable-tests} \
 	%{!?with_java:--disable-java} \
-	%{!?with_python:--disable-python} \
 	%{!?with_perl:--disable-perl} \
 %if %{with php}
-	--enable-php5=yes \
+	--enable-php5 \
 	--with-php5-config-dir=%{php_sysconfdir}/conf.d \
 %else
-	--enable-php5=no \
+	--disable-php5 \
 %endif
+	%{!?with_python:--disable-python} \
+	--disable-silent-rules \
+	%{!?with_static_libs:--disable-static} \
+	%{!?with_tests:--disable-tests} \
 %if %{with wsf}
 	--enable-wsf \
-	--with-sasl2=%{_prefix}/sasl2 \
+	--with-sasl2 \
 %endif
+	--with-html-dir=%{_gtkdocdir}
 
 %{__make}
 
@@ -177,13 +203,19 @@ rm -rf $RPM_BUILD_ROOT
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
 
-find $RPM_BUILD_ROOT -type f -name '*.la' | xargs rm -v
+find $RPM_BUILD_ROOT -type f -name '*.la' | xargs %{__rm} -v
+
+%if %{with static_libs}
+%{?with_java:%{__rm} $RPM_BUILD_ROOT%{_jnidir}/libjnilasso.a}
+%{?with_php:%{__rm} $RPM_BUILD_ROOT%{php_extensiondir}/lasso.a}
+%{?with_python:%{__rm} $RPM_BUILD_ROOT%{py_sitedir}/_lasso.a}
+%endif
 
 # Perl subpackage
 %if %{with perl}
-rm $RPM_BUILD_ROOT%{perl_archlib}/perllocal.pod
-rm $RPM_BUILD_ROOT%{perl_vendorarch}/auto/Lasso/.packlist
-rm $RPM_BUILD_ROOT%{perl_vendorarch}/auto/Lasso/Lasso.bs
+%{__rm} $RPM_BUILD_ROOT%{perl_archlib}/perllocal.pod
+%{__rm} $RPM_BUILD_ROOT%{perl_vendorarch}/auto/Lasso/.packlist
+%{__rm} $RPM_BUILD_ROOT%{perl_vendorarch}/auto/Lasso/Lasso.bs
 %endif
 
 %if %{with python}
@@ -203,7 +235,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc AUTHORS COPYING NEWS README
+%doc AUTHORS ChangeLog NEWS README
 %attr(755,root,root) %{_libdir}/liblasso.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/liblasso.so.3
 
@@ -212,6 +244,12 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/liblasso.so
 %{_pkgconfigdir}/lasso.pc
 %{_includedir}/lasso
+
+%if %{with static_libs}
+%files static
+%defattr(644,root,root,755)
+%{_libdir}/liblasso.a
+%endif
 
 %if %{with perl}
 %files -n perl-%{name}
