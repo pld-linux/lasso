@@ -11,11 +11,15 @@
 %bcond_without	python		# Python 2.x bindings
 %bcond_without	static_libs	# static library
 
+%if "%{?php_suffix}" == ""
+%define		php_suffix	55
+%endif
+%define		php_name	php%{?php_suffix}
 Summary:	Liberty Alliance Single Sign On
 Summary(pl.UTF-8):	Implementacja Liberty Alliance Single Sign On
 Name:		lasso
 Version:	2.4.0
-Release:	1
+Release:	2
 License:	GPL v2+
 Group:		Libraries
 Source0:	http://dev.entrouvert.org/lasso/%{name}-%{version}.tar.gz
@@ -41,7 +45,7 @@ BuildRequires:	xmlsec1-openssl-devel >= 1.2.6
 BuildRequires:	zlib-devel
 %if %{with php}
 BuildRequires:	expat-devel
-BuildRequires:	php-devel >= 5
+BuildRequires:	%{php_name}-devel >= 5
 BuildRequires:	python
 %endif
 %if %{with perl}
@@ -130,17 +134,18 @@ library.
 %description -n java-%{name} -l pl.UTF-8
 Wiązania Javy do biblioteki lasso (Liberty Alliance Single Sign On).
 
-%package -n php-%{name}
+%package -n %{php_name}-%{name}
 Summary:	Liberty Alliance Single Sign On (lasso) PHP bindings
 Summary(pl.UTF-8):	Wiązania PHP do Liberty Alliance Single Sign On (lasso)
 Group:		Development/Languages/PHP
 Requires:	%{name} = %{version}-%{release}
+%{?requires_php_extension}
 
-%description -n php-%{name}
+%description -n %{php_name}-%{name}
 PHP language bindings for the lasso (Liberty Alliance Single Sign On)
 library.
 
-%description -n php-%{name} -l pl.UTF-8
+%description -n %{php_name}-%{name} -l pl.UTF-8
 Wiązania PHP do biblioteki lasso (Liberty Alliance Single Sign On).
 
 %package -n python-%{name}
@@ -267,7 +272,7 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %if %{with php}
-%files -n php-%{name}
+%files -n %{php_name}-%{name}
 %defattr(644,root,root,755)
 %config(noreplace) %verify(not md5 mtime size) %{php_sysconfdir}/conf.d/lasso.ini
 %attr(755,root,root) %{php_extensiondir}/lasso.so
