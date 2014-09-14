@@ -220,7 +220,6 @@ find $RPM_BUILD_ROOT -type f -name '*.la' | xargs %{__rm} -v
 %if %{with perl}
 %{__rm} $RPM_BUILD_ROOT%{perl_archlib}/perllocal.pod
 %{__rm} $RPM_BUILD_ROOT%{perl_vendorarch}/auto/Lasso/.packlist
-%{__rm} $RPM_BUILD_ROOT%{perl_vendorarch}/auto/Lasso/Lasso.bs
 %endif
 
 %if %{with python}
