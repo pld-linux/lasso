@@ -6,7 +6,7 @@
 %bcond_with	wsf		# experimental ID-WSF support
 %bcond_with	tests		# build tests
 %bcond_without	java		# Java bindings
-%bcond_without	php		# PHP bindings
+%bcond_without	php		# PHP 5 bindings (not ready for PHP 7)
 %bcond_without	perl		# Perl bindings
 %bcond_without	python		# Python 2.x bindings
 %bcond_without	static_libs	# static library
@@ -18,20 +18,17 @@
 Summary:	Liberty Alliance Single Sign On
 Summary(pl.UTF-8):	Implementacja Liberty Alliance Single Sign On
 Name:		lasso
-Version:	2.4.0
-Release:	6
+Version:	2.5.1
+Release:	1
 License:	GPL v2+
 Group:		Libraries
-Source0:	http://dev.entrouvert.org/lasso/%{name}-%{version}.tar.gz
-# Source0-md5:	3d04aaff37c816aa16f2d1bcc2639f27
-Patch1:		0001-Fix-java-version-detection.patch
-Patch2:		0001-Fix-generators-for-parsing-of-integer-values.patch
-Patch3:		0002-xml-xml.c-fix-liberal-use-of-casting-for-the-SNIPPET.patch
+Source0:	https://dev.entrouvert.org/lasso/%{name}-%{version}.tar.gz
+# Source0-md5:	f943f3ed67fabad11c6bad1ab615398f
 URL:		http://lasso.entrouvert.org/
 BuildRequires:	autoconf >= 2.53
 BuildRequires:	automake >= 1:1.11
 %{?with_tests:BuildRequires:	check-devel}
-%{?with_wsf:BuildRequires: cyrus-sasl-devel}
+%{?with_wsf:BuildRequires: cyrus-sasl-devel >= 2}
 BuildRequires:	glib2-devel >= 1:2.17.0
 BuildRequires:	gtk-doc >= 1.9
 BuildRequires:	libtool
@@ -53,7 +50,7 @@ BuildRequires:	perl-ExtUtils-MakeMaker
 BuildRequires:	perl-Test-Simple
 %endif
 %if %{with java}
-BuildRequires:	jdk
+BuildRequires:	jdk >= 1.4
 BuildRequires:	rpm-javaprov
 %endif
 %if %{with python}
@@ -164,9 +161,6 @@ On).
 
 %prep
 %setup -q
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
 
 %{__sed} -i -e '
 	s/OPTIMIZE="-g"/CC="%{__cc}" OPTIMIZE="%{rpmcflags}" INSTALLDIRS=vendor/
