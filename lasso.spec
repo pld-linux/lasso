@@ -6,7 +6,7 @@
 %bcond_with	wsf		# experimental ID-WSF support
 %bcond_with	tests		# build tests
 %bcond_without	java		# Java bindings
-%bcond_without	php		# PHP 5 bindings (not ready for PHP 7)
+%bcond_with	php		# PHP 5 bindings (not ready for PHP 7)
 %bcond_without	perl		# Perl bindings
 %bcond_without	python		# Python 2.x bindings
 %bcond_without	static_libs	# static library
@@ -19,7 +19,7 @@ Summary:	Liberty Alliance Single Sign On
 Summary(pl.UTF-8):	Implementacja Liberty Alliance Single Sign On
 Name:		lasso
 Version:	2.5.1
-Release:	3
+Release:	4
 License:	GPL v2+
 Group:		Libraries
 Source0:	https://dev.entrouvert.org/lasso/%{name}-%{version}.tar.gz
