@@ -5,10 +5,10 @@
 # Conditional build:
 %bcond_with	wsf		# experimental ID-WSF support
 %bcond_with	tests		# build tests
-%bcond_without	java		# Java bindings
+%bcond_with	java		# Java bindings
 %bcond_with	php		# PHP 5 bindings (not ready for PHP 7)
 %bcond_without	perl		# Perl bindings
-%bcond_without	python		# Python 2.x bindings
+%bcond_without	python		# Python 3.x bindings
 %bcond_without	static_libs	# static library
 
 %if "%{?php_suffix}" == ""
@@ -18,12 +18,12 @@
 Summary:	Liberty Alliance Single Sign On
 Summary(pl.UTF-8):	Implementacja Liberty Alliance Single Sign On
 Name:		lasso
-Version:	2.6.0
-Release:	3
+Version:	2.7.0
+Release:	1
 License:	GPL v2+
 Group:		Libraries
 Source0:	https://dev.entrouvert.org/lasso/%{name}-%{version}.tar.gz
-# Source0-md5:	26463792b8a77b45703baa25b0e2eb4b
+# Source0-md5:	8262e05f7844aea6b32239bff6ddd6b9
 URL:		http://lasso.entrouvert.org/
 BuildRequires:	autoconf >= 2.53
 BuildRequires:	automake >= 1:1.11
@@ -43,7 +43,7 @@ BuildRequires:	zlib-devel
 %if %{with php}
 BuildRequires:	expat-devel
 BuildRequires:	%{php_name}-devel >= 5
-BuildRequires:	python
+BuildRequires:	python3
 %endif
 %if %{with perl}
 BuildRequires:	perl-ExtUtils-MakeMaker
@@ -54,8 +54,8 @@ BuildRequires:	jdk >= 1.4
 BuildRequires:	rpm-javaprov
 %endif
 %if %{with python}
-BuildRequires:	python-devel >= 2
-BuildRequires:	python-lxml
+BuildRequires:	python3-devel
+BuildRequires:	python3-lxml
 BuildRequires:	rpm-pythonprov
 %endif
 Requires:	glib2 >= 1:2.17.0
@@ -145,17 +145,17 @@ library.
 %description -n %{php_name}-%{name} -l pl.UTF-8
 Wiązania PHP do biblioteki lasso (Liberty Alliance Single Sign On).
 
-%package -n python-%{name}
+%package -n python3-%{name}
 Summary:	Liberty Alliance Single Sign On (lasso) Python bindings
 Summary(pl.UTF-8):	Wiązania Pythona do Liberty Alliance Single Sign On (lasso)
 Group:		Libraries/Python
 Requires:	%{name} = %{version}-%{release}
 
-%description -n python-%{name}
+%description -n python3-%{name}
 Python language bindings for the lasso (Liberty Alliance Single Sign
 On) library.
 
-%description -n python-%{name} -l pl.UTF-8
+%description -n python3-%{name} -l pl.UTF-8
 Wiązania Pythona do biblioteki lasso (Liberty Alliance Single Sign
 On).
 
@@ -207,7 +207,7 @@ find $RPM_BUILD_ROOT -type f -name '*.la' | xargs %{__rm} -v
 %if %{with static_libs}
 %{?with_java:%{__rm} $RPM_BUILD_ROOT%{_jnidir}/libjnilasso.a}
 %{?with_php:%{__rm} $RPM_BUILD_ROOT%{php_extensiondir}/lasso.a}
-%{?with_python:%{__rm} $RPM_BUILD_ROOT%{py_sitedir}/_lasso.a}
+%{?with_python:%{__rm} $RPM_BUILD_ROOT%{py3_sitedir}/_lasso.a}
 %endif
 
 # Perl subpackage
@@ -217,9 +217,7 @@ find $RPM_BUILD_ROOT -type f -name '*.la' | xargs %{__rm} -v
 %endif
 
 %if %{with python}
-%py_ocomp $RPM_BUILD_ROOT%{py_sitedir}
-%py_comp $RPM_BUILD_ROOT%{py_sitedir}
-%py_postclean
+%py3_comp $RPM_BUILD_ROOT%{py3_sitedir}
 %endif
 
 # Remove bogus doc files
@@ -273,8 +271,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %if %{with python}
-%files -n python-%{name}
+%files -n python3-%{name}
 %defattr(644,root,root,755)
-%{py_sitedir}/lasso.py[co]
-%attr(755,root,root) %{py_sitedir}/_lasso.so
+%{py3_sitedir}/__pycache__
+%{py3_sitedir}/lasso.py
+%attr(755,root,root) %{py3_sitedir}/_lasso.so
 %endif
