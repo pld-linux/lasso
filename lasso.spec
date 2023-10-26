@@ -24,7 +24,7 @@ License:	GPL v2+
 Group:		Libraries
 Source0:	https://dev.entrouvert.org/lasso/%{name}-%{version}.tar.gz
 # Source0-md5:	ad2e167973cc1c21cd16329bfbcd3d16
-URL:		http://lasso.entrouvert.org/
+URL:		https://lasso.entrouvert.org/
 BuildRequires:	autoconf >= 2.53
 BuildRequires:	automake >= 1:1.11
 %{?with_tests:BuildRequires:	check-devel}
@@ -61,6 +61,9 @@ BuildRequires:	rpm-pythonprov
 Requires:	glib2 >= 1:2.17.0
 Requires:	xmlsec1 >= 1.2.6
 Requires:	xmlsec1-openssl >= 1.2.6
+%if %{without java}
+Obsoletes:	java-lasso < %{version}-%{release}
+%endif
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -150,6 +153,7 @@ Summary:	Liberty Alliance Single Sign On (lasso) Python bindings
 Summary(pl.UTF-8):	Wiązania Pythona do Liberty Alliance Single Sign On (lasso)
 Group:		Libraries/Python
 Requires:	%{name} = %{version}-%{release}
+Obsoletes:	python-lasso < 2.7
 
 %description -n python3-%{name}
 Python language bindings for the lasso (Liberty Alliance Single Sign
