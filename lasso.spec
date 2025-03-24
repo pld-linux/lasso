@@ -166,9 +166,8 @@ On).
 %prep
 %setup -q
 
-%{__sed} -i -e '
-	s/OPTIMIZE="-g"/CC="%{__cc}" OPTIMIZE="%{rpmcflags}" INSTALLDIRS=vendor/
-' bindings/perl/Makefile.am
+%{__sed} -i -e 's|OPTIMIZE="-g"|CC="%{__cc}" OPTIMIZE="%{rpmcflags}" INSTALLDIRS=vendor|' \
+	bindings/perl/Makefile.am
 
 %build
 %{__libtoolize}
