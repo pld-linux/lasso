@@ -19,11 +19,12 @@ Summary:	Liberty Alliance Single Sign On
 Summary(pl.UTF-8):	Implementacja Liberty Alliance Single Sign On
 Name:		lasso
 Version:	2.8.2
-Release:	4
+Release:	5
 License:	GPL v2+
 Group:		Libraries
 Source0:	https://dev.entrouvert.org/lasso/%{name}-%{version}.tar.gz
 # Source0-md5:	ad2e167973cc1c21cd16329bfbcd3d16
+Patch0:		git.patch
 URL:		https://lasso.entrouvert.org/
 BuildRequires:	autoconf >= 2.53
 BuildRequires:	automake >= 1:1.11
@@ -165,6 +166,7 @@ On).
 
 %prep
 %setup -q
+%patch -P0 -p1
 
 %{__sed} -i -e 's|OPTIMIZE="-g"|CC="%{__cc}" OPTIMIZE="%{rpmcflags}" INSTALLDIRS=vendor|' \
 	bindings/perl/Makefile.am
